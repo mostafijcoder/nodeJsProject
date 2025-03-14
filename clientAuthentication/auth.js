@@ -61,12 +61,25 @@ app.use('/admin', (req, res) => {
     res.end('Welcome to Admin Area!');
 });
 
+/*
 // Middleware for public area
 app.use((req, res) => {
     res.end('Welcome to Public Area!');
 });
+*/
+app
+.use(function (req, res, next) { next(new Error('Big bad error details')); })
+    .use(function (req, res, next) { res.end('I will never get called'); })
+    .use(function (err, req, res, next) {
+        // Log the error on the server
+ console.log('Error handled:', err.message);
+        console.log('Stacktrace:', err.stack);
+        // inform the client
+        res.writeHead(500);
+ res.end('Unable to process the request');
+    })
 
 // Create & Start HTTP Server
-http.createServer(app).listen(3011, () => {
-    console.log('Server running on http://localhost:3011');
+http.createServer(app).listen(3012, () => {
+    console.log('Server running on http://localhost:3012');
 });
