@@ -31,14 +31,42 @@ function authorize(req, res, next) {
   }
 // As a demo, this middleware only accepts username = foo and password = bar at the moment, but we can easily make it configurable if we want to. Notice that we only call next() if the access is authorized so it can be used to provide protection against bad credentials
 // The middleware is then used in a connect server that listens on port 3010
-const app = connect();
-app.use(authorize)
+
+/*app.use(authorize)
   .use((req, res) => {
     res.end('Authorized');
-  });
-http.createServer(app).listen(3010, () => {
-    console.log('Server running on http://localhost:3010');
-    }
-    );
+  }); */
+
 // If you try to access the server without providing the correct credentials, you will get a 401 NOT AUTHORIZED response with a WWW-Authenticate header, as shown in the following example:
 // $ curl http://localhost:3010/user -i password:password
+//We can reuse this authentication middleware to restrict specific areas only. For example, we can restrict access to the /admin path by adding a new middleware that checks the request URL and only calls the authorization middleware if the request URL starts with /admin. If the request URL does not start with /admin, we can simply pass control to the next middleware. This is a good example of how we can use middleware to restrict access to specific areas of our application.
+// The following code demonstrates how to restrict access to the /admin path:
+
+
+
+// Create Connect app
+const app = connect();
+
+// Restrict access to /admin
+app.use((req, res, next) => {
+    if (req.url.startsWith('/admin')) {
+        authorize(req, res, next);
+    } else {
+        next();
+    }
+});
+
+// Middleware for /admin route
+app.use('/admin', (req, res) => {
+    res.end('Welcome to Admin Area!');
+});
+
+// Middleware for public area
+app.use((req, res) => {
+    res.end('Welcome to Public Area!');
+});
+
+// Create & Start HTTP Server
+http.createServer(app).listen(3011, () => {
+    console.log('Server running on http://localhost:3011');
+});
