@@ -9,8 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.20.3",
     "connect": "^3.7.0",
     "express": "^4.21.2",
+    "serve-index": "^1.9.1",
     "serve-static": "^1.16.2"
   }
 }
