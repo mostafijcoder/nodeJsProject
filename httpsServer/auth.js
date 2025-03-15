@@ -17,5 +17,18 @@ var options = {
   cert: fs.readFileSync('./cert.pem')
   };
   https.createServer(options, function (req, res) {
-     res.end('hello client!');
-  }).listen(3013)
+     res.end('secure!');
+  }).listen(443);
+
+  // Redirect from http port 80 to https
+
+  var http=require('http');
+  http.createServer(function(req,res){
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.end();
+  }).listen(80);
+  
+
+
+
+  //By convention when you request an HTTP web site without specifying a port (for example, http://127.0.0.1) the client tries to connect to port 80. However, if you request an HTTPS web site without specifying a port (such as https://127.0.0.1), the client tries to connect to port 443 on the server. This allows you run an HTTPS server on port 443 and an HTTP server on port 80 that is simply redirecting client requests to use HTTPS
