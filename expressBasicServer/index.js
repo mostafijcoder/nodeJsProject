@@ -1,27 +1,22 @@
+
 var express = require('express');
-var bodyParser = require('body-parser');
-var app = express()
-   .use(express.json())
-   .use(express.urlencoded({ extended: true }))
-   .use(function (req, res) {
-       if (req.body.foo) {
-           res.end('Body parsed! Value of foo: ' + req.body.foo);
-       }
-       else {
-           res.end('Body does not have foo!');
-       }
-   })
-   .use(function (err, req, res, next) {
-       res.end('Invalid body!');
-   })
-   .listen(3014);
+ var cookieParser = require('cookie-parser');
+ var app = express()
+    .use(cookieParser())
+    .use(function (req, res) {
+        if (req.cookies.name) {
+            console.log('User name:', req.cookies.name);
+        }
+        else {
+        res.cookie('name', 'foo');
+        }
+        res.end('Hello!');
+    })
+    .listen(30014);
 
+/*
+    A cookie is some data sent from the web server and stored in the user’s web browser. Every time the user’s browser makes a request to the web server, the web browser will send back the cookie that it received from the server. Cookiesprovide a great foundation for creating user sessions.
+    The Express response object contains a few useful member functions to set client cookies. To set a cookie, call res.cookie(cookieName,value,[options]) function. For example, the code in Listing 7-9 will set a cookie called 'name' to 'foo':
 
-   /*Body parsing is the act of parsing a string based client request body into a JavaScript object that you can easily consume in your application code. This is a very common task in web development, making the body-parser middleware (npm install body-parser) a must-have in your tool-belt. It simply does the following two things:
-	
-   Parses the request body into a JavaScript object if the 
-  
-   Puts this JavaScript object (if the parse was successful) in 
-   content-type matches JSON 
-   (application/JSON) or a user submitted HTML form (the browser sends it as the MIME type 
-   application/x-www-form-urlencoded) middleware. */
+    If this response was handled by the browser, then that browser would always send the cookie called ‘name’ with value ‘foo’ if the path on the server starts with ‘/’ . The cookie is sent in the ‘cookie’ header by the client. In Listing 7-11, modify our server to log any cookies sent in the client request.
+    While the header is useful, you need something to parse this into a JavaScript object. That’s where the cookieparser (npm install cookie-parser) middleware comes in. Put this middleware in your queue and it populates the parsed cookies into the ‘req.cookies’ object, as shown in Listing 7-12, to demonstrate its usage. */
