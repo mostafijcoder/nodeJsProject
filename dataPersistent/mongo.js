@@ -29,6 +29,22 @@ async function main() {
         const results = await collection.find(findKey).toArray();
         console.log('🔍 Found Documents:', results);
 
+        // Update the document
+        demoPerson.lastName = 'Martin';
+        const updateResult = await collection
+            .updateOne(findKey, { $set: demoPerson });
+        if (updateResult.modifiedCount > 0) {
+            console.log('Updated Person Successfully');
+
+        // Find the updated document
+
+        const updatedResults = await collection.find(findKey).toArray();
+        console.log('Found Updated Documents:', updatedResults);
+
+        } else {
+            console.log('No Document Found to Update');
+        }
+        
         // Delete the document
         const deleteResult = await collection.deleteOne(findKey);
         if (deleteResult.deletedCount > 0) {
